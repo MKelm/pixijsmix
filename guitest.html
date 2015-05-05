@@ -1,0 +1,103 @@
+<html>
+<head>
+    <title>pixi.js gui test</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #000000;
+        }
+    </style>
+    <script src="builds/pixi.v3.0.2.min.js"></script>
+    <script src="builds/fpsmeter.v0.3.1.min.js"></script>
+</head>
+<body>
+    <script>
+      var renderer = PIXI.autoDetectRenderer(600, 600, {transparent : true});
+      renderer.resize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.view);
+
+      // calculate screen scale depending on longer size
+      var screenScale = 100;
+      if (window.innerWidth > window.innerHeight) {
+        screenScale = window.innerHeight / screenScale;
+      } else {
+        screenScale = window.innerWidth / screenScale;
+      }
+
+      // create the root of the scene graph
+      var stage = new PIXI.Container();
+      stage.interactive = true;
+
+      var graphics = new PIXI.Graphics();
+      var frameWidth = screenScale * 100;
+      var frameHeight = screenScale * 100;
+
+      //graphics.lineStyle(2 * screenScale, 0x0000FF, 1);
+      graphics.beginFill(0xFFFFFF, 1);
+      graphics.drawRect(
+        window.innerWidth / 2 - frameWidth / 2,
+        window.innerHeight / 2 - frameHeight / 2,
+        frameWidth, frameHeight
+      );
+
+      graphics.interactive = true;
+      graphics.click = function(){
+        alert("click rect");
+      };
+
+      stage.addChild(graphics);
+
+      // text elements
+      var menuText = new PIXI.Text(
+        'Menu',
+        { font: 'bold 60px Arial', fill: '#728B18', align: 'center',
+          stroke: '#000000', strokeThickness: 6 }
+      );
+      menuText.anchor.set(0.5);
+      menuText.position.x = window.innerWidth / 2 - frameWidth / 2 + menuText.width / 2;
+      menuText.position.y = window.innerHeight / 2 + frameHeight / 2 - menuText.height / 2;
+      menuText.interactive = true;
+      menuText.click = function(){
+        alert("click menu");
+      };
+      stage.addChild(menuText);
+
+      var aboutText = new PIXI.Text(
+        'About',
+        { font: 'bold 60px Arial', fill: '#728B18', align: 'center',
+          stroke: '#000000', strokeThickness: 6 }
+      );
+      aboutText.anchor.set(0.5);
+      aboutText.position.x = window.innerWidth / 2 + frameWidth / 2 - aboutText.width / 2;
+      aboutText.position.y = window.innerHeight / 2 + frameHeight / 2 - aboutText.height / 2;
+      aboutText.interactive = true;
+      aboutText.click = function(){
+        alert("click about");
+      };
+      stage.addChild(aboutText);
+
+      // fps meter
+      var meter = new FPSMeter(null, { theme: "transparent", graph: 0, heat: 0 });
+      meter.hide();
+      document.addEventListener("keydown", keyDownToggleFPSMeter, false);
+      function keyDownToggleFPSMeter(e) {
+        if (e.keyCode == 45) {
+          if (meter.isPaused == true)
+            meter.show();
+          else
+            meter.hide();
+        }
+      }
+
+      // start animating / rendering
+      animate();
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(stage);
+        meter.tick();
+      }
+    </script>
+
+    </body>
+</html>
