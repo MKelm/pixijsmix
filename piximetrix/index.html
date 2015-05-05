@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>Pixi.Metrix by Martin Kelm 2015</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #000000;
+        }
+    </style>
+    <script src="../builds/pixi.v3.0.2.min.js"></script>
+    <script src="../builds/fpsmeter.v0.3.1.min.js"></script>
+    <script src="js/Metrix.js"></script>
+    <script src="js/Pixi.js"></script>
+    <script src="js/Board.js"></script>
+</head>
+<body>
+  <script>
+    var metrix = metrix || {};
+
+    metrix.pixi = new Metrix.Pixi(true);
+    metrix.pixi.animate(metrix.pixi);
+
+    metrix.board = new Metrix.Board(metrix.pixi);
+    metrix.board.addGrid();
+    metrix.board.addGridElement();
+  </script>
+</body>
