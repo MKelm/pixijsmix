@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title>pixi.js first in</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #000000;
+        }
+    </style>
+    <script src="builds/pixi.v3.0.2.min.js"></script>
+</head>
+<body>
+    <script>
+      var terrainSprites = [];
+      var terrainSpritesAmount = 3;
+
+      var terrainImageNames = [
+        "dirt", "grass", "rock", "sand", "water"
+      ];
+      var terrainTextures = [];
+      var terrainImageSize = 64;
+
+      for (var i = 0; i < terrainImageNames.length; i++)
+        terrainTextures.push(
+          PIXI.Texture.fromImage(
+            'images/terrain/'+terrainImageNames[i]+'_'+terrainImageSize+'.png'
+          )
+        );
+
+      var screenScale = 600 / 600;
+      var renderer = PIXI.autoDetectRenderer(600, 600, {backgroundColor : 0x000000});
+      renderer.resize(window.innerWidth, window.innerHeight);
+      screenScale = window.innerWidth / window.innerHeight;
+      document.body.appendChild(renderer.view);
+
+      // create the root of the scene graph
+      var stage = new PIXI.Container();
+
+      for (var i = 0; i < terrainSpritesAmount; i++) {
+
+        // create a new Sprite using the texture
+        var terrain = new PIXI.Sprite(
+          terrainTextures[Math.floor(Math.random()*terrainImageNames.length)]
+        );
+
+        // center the sprite's anchor point
+        terrain.anchor.x = 0.5;
+        terrain.anchor.y = 0.5;
+
+        // calculate sprite position in relation to center of screen
+        var positionX = Math.random();
+        if (positionX < 0.5)
+          positionX = -1;
+        else
+          positionX = 1;
+        positionX = positionX * Math.floor(Math.random() * window.innerWidth / 2);
+
+        var positionY = Math.random();
+        if (positionY < 0.5)
+          positionY = -1;
+        else
+          positionY = 1;
+        positionY = positionY * Math.floor(Math.random() * window.innerHeight / 2);
+
+        terrain.position.x = window.innerWidth / 2 + positionX;
+        terrain.position.y = window.innerHeight / 2 + positionY;
+
+        // scale sprite depending on screen scale
+        terrain.scale.x = screenScale * 0.5;
+        terrain.scale.y = screenScale * 0.5;
+
+        stage.addChild(terrain);
+        terrainSprites.push(terrain);
+      }
+
+      // start animating
+      animate();
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // just for fun, let's rotate mr rabbit a little
+        for (var i = 0; i < terrainSpritesAmount; i++) {
+          terrainSprites[i].rotation += 0.1;
+        }
+
+        // render the container
+        renderer.render(stage);
+      }
+    </script>
+
+    </body>
+</html>
