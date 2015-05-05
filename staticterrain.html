@@ -1,0 +1,104 @@
+<html>
+<head>
+    <title>pixi.js static terrain</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          background-color: #000000;
+        }
+    </style>
+    <script src="builds/pixi.v3.0.2.min.js"></script>
+</head>
+<body>
+    <script>
+      var terrainSprites = [];
+      var terrainSpritesAmount = 1;
+
+      var terrainImageNames = [
+        "dirt", "grass", "rock", "sand", "water"
+      ];
+      var terrainTextures = [];
+      var terrainImageSize = 64;
+      var calcTerrainImageSize = terrainImageSize;
+
+      for (var i = 0; i < terrainImageNames.length; i++)
+        terrainTextures.push(
+          PIXI.Texture.fromImage(
+            'images/terrain/'+terrainImageNames[i]+'_'+terrainImageSize+'.png'
+          )
+        );
+
+      var screenScale = 600 / 600;
+      var renderer = PIXI.autoDetectRenderer(600, 600, { transparent: true });
+      renderer.resize(window.innerWidth, window.innerHeight);
+      screenScale = window.innerWidth / window.innerHeight;
+      document.body.appendChild(renderer.view);
+
+      // create the root of the scene graph
+      var stage = new PIXI.Container();
+      stage.interactive = true;
+
+      // set terrain
+      calcTerrainImageSize = calcTerrainImageSize * screenScale * 0.5;
+      var fieldsAmountX = Math.floor(window.innerWidth / calcTerrainImageSize);
+      var fieldsAmountY = Math.floor(window.innerHeight / calcTerrainImageSize);
+
+      terrainSpritesAmount = fieldsAmountX * fieldsAmountY;
+
+      var spritePosX = calcTerrainImageSize;
+      var spritePosY = calcTerrainImageSize;
+      for (var i = 0; i < terrainSpritesAmount; i++) {
+
+        // create a new Sprite using the texture
+        var terrain = new PIXI.Sprite(
+          terrainTextures[Math.floor(Math.random()*terrainImageNames.length)]
+        );
+
+        // center the sprite's anchor point
+        terrain.anchor.x = 0.5;
+        terrain.anchor.y = 0.5;
+
+        // calculate position depending on center pos and window size
+        terrain.position.x = window.innerWidth / 2 -
+          calcTerrainImageSize / 2 + spritePosX - fieldsAmountX / 2 * calcTerrainImageSize;
+        terrain.position.y = window.innerHeight / 2 -
+          calcTerrainImageSize / 2 + spritePosY - fieldsAmountY / 2 * calcTerrainImageSize;
+
+        // scale sprite depending on screen scale
+        terrain.scale.x = screenScale * 0.5;
+        terrain.scale.y = screenScale * 0.5;
+
+        stage.addChild(terrain);
+        terrainSprites.push(terrain);
+
+        spritePosX += calcTerrainImageSize;
+        if (i % fieldsAmountX == fieldsAmountX - 1) {
+          spritePosX = calcTerrainImageSize;
+          spritePosY += calcTerrainImageSize;
+        }
+      }
+
+      // set helper graphics
+      var graphics = new PIXI.Graphics();
+
+      graphics.lineStyle(2, 0x0000FF, 1);
+      graphics.beginFill(0xFF700B, 1);
+      graphics.drawRect(
+        window.innerWidth / 2 - 10, window.innerHeight / 2 - 10, 20, 20
+      );
+
+      stage.addChild(graphics);
+
+      // start animating
+      animate();
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // render the container
+        renderer.render(stage);
+      }
+    </script>
+
+    </body>
+</html>
