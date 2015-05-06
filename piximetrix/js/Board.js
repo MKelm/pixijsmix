@@ -23,7 +23,9 @@ Metrix.Board = function(pixi) {
   this.grid.addGfx();
   
   // add default text elements
-  this.pointsText = new Metrix.Text(this, "Points: 0", 1, 12, "left");
+  this.points = 0;
+  this.pointsPrefixText = "Points: ";
+  this.pointsText = new Metrix.Text(this, this.pointsPrefixText + this.points, 1, 12, "left");
   this.credits = new Metrix.Text(this, "idx.codelab", 9, 12, "right");
   
 };
@@ -46,16 +48,22 @@ Metrix.Board.prototype.addBlock = function(column, row) {
   this.grid.setMovementField(column, row); // every new block is located in a movement field
 };
 
+Metrix.Board.prototype.addPoints = function(pointsToAdd) {
+  this.points += pointsToAdd;
+  this.pointsText.setText(this.pointsPrefixText + this.points);
+};
+
 Metrix.Board.prototype.moveBlocks = function(enableMovement) {
   if (enableMovement === true) {
     for (var i = 0; i < this.grid.columns; i++) {
       // scan from bottom to top to avoid extra movements
       for (var j = this.grid.rows - 1; j > -1; j--) {
-        var blockIndex = this.grid.setFieldDown(i, j);
+        var blockIndex = this.grid.setSelectedFieldDown(i, j);
         if (blockIndex > -1) {
           this.blocks[blockIndex].moveDown();
         } else if (this.grid.isMovementField(i, j) == true) {
           enableMovement = false;
+          this.addPoints(100);
         }
       }
     }
@@ -64,4 +72,24 @@ Metrix.Board.prototype.moveBlocks = function(enableMovement) {
     this.addRandomBlock();
   var scope = this;
   setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);
+};
+
+Metrix.Board.prototype.addKeyListeners = function() {
+  var scope = this;
+  document.addEventListener("keydown", 
+    function(e) {
+      if (e.keyCode == 40) {
+        var blockIndex = scope.grid.setFieldDown();
+        if (blockIndex > -1)
+          scope.blocks[blockIndex].moveDown();
+      } else if (e.keyCode == 39) {
+        var blockIndex = scope.grid.setFieldRight();
+        if (blockIndex > -1)
+          scope.blocks[blockIndex].moveRight();
+      } else if (e.keyCode == 37) {
+        var blockIndex = scope.grid.setFieldLeft();
+        if (blockIndex > -1)
+          scope.blocks[blockIndex].moveLeft();
+      }
+    }, false);
 };
