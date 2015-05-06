@@ -33,13 +33,13 @@ Metrix.Block.prototype.setPosition = function(column, row) {
   this.gfx.position.y = row * this.size;
 };
 
-Metrix.Block.prototype.setGfx = function() {
+Metrix.Block.prototype.addGfx = function() {
   this.gfx.beginFill(this.colors[this.colorIdx], 1);
   this.gfx.drawRect(
     this.parent.pixi.screenScale * 0.5, this.parent.pixi.screenScale * 0.5,
     this.size - this.parent.pixi.screenScale, this.size - this.parent.pixi.screenScale
   );
-  this.parent.pixi.stage.addChild(this.gfx);
+  this.parent.container.addChild(this.gfx);
 };
 
 Metrix.Block.prototype.isVisible = function() {
