@@ -57,3 +57,11 @@ Metrix.Block.prototype.hide = function() {
 Metrix.Block.prototype.moveDown = function() {
   this.setPosition(this.position.column, this.position.row+1);
 };
+
+Metrix.Block.prototype.moveRight = function() {
+  this.setPosition(this.position.column+1, this.position.row);
+};
+
+Metrix.Block.prototype.moveLeft = function() {
+  this.setPosition(this.position.column-1, this.position.row);
+};
