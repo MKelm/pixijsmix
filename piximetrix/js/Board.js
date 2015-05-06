@@ -9,53 +9,26 @@ Metrix.Board = function(pixi) {
   // blocks[columns][rows]
   this.blockSize = this.pixi.screenScale * 100 / this.rows;
   this.blocks = new Array(this.columns * this.rows);
-  for (var i = 0; i < this.columns; i++) {
+  for (var i = 0; i < this.columns * this.rows; i++) {
     this.blocks[i] = new Metrix.Block(this, this.blockSize);
   }
   this.blocksMaxIndex = -1;
+
+  // use a board container to manage blocks and grid content on one layer
+  this.container = new PIXI.Container();
+  this.pixi.stage.addChild(this.container);
   
   // grid to manage blocks in fields
   this.grid = new Metrix.Grid(this, this.columns, this.rows);
+  this.grid.addGfx();
+  
+  // add default text elements
+  this.pointsText = new Metrix.Text(this, "Points: 0", 1, 12, "left");
+  this.credits = new Metrix.Text(this, "idx.codelab", 9, 12, "right");
+  
 };
 
 Metrix.Board.prototype.constructor = Metrix.Board;
-
-Metrix.Board.prototype.initialize = function() {
-
-  // set board grid and col / row size
-  var gridGfx = new PIXI.Graphics();
-  var gridGfxHeight = this.pixi.screenScale * 100;
-  var gridGfxWidth = gridGfxHeight / this.rows * this.columns;
-
-  var gridStartX = window.innerWidth / 2 - gridGfxWidth / 2;
-  var gridStartY = window.innerHeight / 2 - gridGfxHeight / 2;
-
-  // set grid background
-  gridGfx.beginFill(0xFFFFFF, 1);
-  gridGfx.drawRect(
-    gridStartX, gridStartY,
-    gridGfxWidth, gridGfxHeight
-  );
-
-  // set grid lines
-  gridGfx.lineStyle(this.pixi.screenScale * 0.5, 0x353535, 1);
-  for (var gCol = 0; gCol < this.columns; gCol++) {
-    gridGfx.moveTo(gridStartX + gCol * this.blockSize, gridStartY);
-    gridGfx.lineTo(
-      gridStartX + gCol * this.blockSize,
-      gridStartY + this.blockSize * this.rows
-    );
-  }
-  for (var gRow = 0; gRow < this.rows + 1; gRow++) {
-    gridGfx.moveTo(gridStartX, gridStartY + gRow * this.blockSize);
-    gridGfx.lineTo(
-      gridStartX + this.columns * this.blockSize,
-      gridStartY + gRow * this.blockSize
-    );
-  }
-
-  this.pixi.stage.addChild(gridGfx);
-};
 
 Metrix.Board.prototype.addRandomBlock = function() {
   var blockRandColumn = Math.round(Math.random() * (this.columns - 1));
@@ -63,10 +36,10 @@ Metrix.Board.prototype.addRandomBlock = function() {
 };
 
 Metrix.Board.prototype.addBlock = function(column, row) {
-  this.blocksMaxIndex++;
+  this.blocksMaxIndex += 1;
   this.blocks[this.blocksMaxIndex].setPosition(column, row);
   this.blocks[this.blocksMaxIndex].setRandomColor();
-  this.blocks[this.blocksMaxIndex].setGfx();
+  this.blocks[this.blocksMaxIndex].addGfx();
   this.blocks[this.blocksMaxIndex].show();
   // register block as grid field
   this.grid.setBlockIndex(column, row, this.blocksMaxIndex);
