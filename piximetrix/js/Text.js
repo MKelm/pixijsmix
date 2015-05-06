@@ -30,5 +30,5 @@ Metrix.Text.prototype.setInteraction = function() {
 };
 
 Metrix.Text.prototype.setText = function(text) {
-  this.text.setText(text);
-}
+  this.text.text = text;
+};
