@@ -1,10 +1,13 @@
 Metrix.Text = function(parent, text, column, row, align) {
   this.parent = parent;
   
+  this.fontSize = 20 * this.parent.pixi.screenScale * 0.2;
+  this.strokeThickness = 5 * this.parent.pixi.screenScale * 0.2;
+  
   this.text = new PIXI.Text(
     text,
-    { font: 'bold 20px Arial', fill: '#FFFFFF', align: 'center',
-      stroke: '#353535', strokeThickness: 6 }
+    { font: 'bold ' + this.fontSize + 'px Arial', fill: '#FFFFFF', align: 'center',
+      stroke: '#353535', strokeThickness: this.strokeThickness }
   );
 
   if (align == "left") {
