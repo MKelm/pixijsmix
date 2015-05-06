@@ -71,9 +71,15 @@ Metrix.Grid.prototype.isMovementField = function(column, row) {
     return true;
   else
     return false;
-}
+};
 
-Metrix.Grid.prototype.setFieldDown = function(column, row) {
+Metrix.Grid.prototype.setFieldDown = function() {
+  return this.setSelectedFieldDown(
+    this.movementField.column, this.movementField.row
+  );
+};
+
+Metrix.Grid.prototype.setSelectedFieldDown = function(column, row) {
   if (row+1 < this.parent.rows && this.fields[column][row+1] == -1) {
     var index = this.fields[column][row];
     if (this.isMovementField(column, row) == true)
@@ -83,4 +89,30 @@ Metrix.Grid.prototype.setFieldDown = function(column, row) {
     return index;
   }
   return -1;
-}
+};
+
+Metrix.Grid.prototype.setFieldRight = function() {
+  var column = this.movementField.column;
+  var row = this.movementField.row;
+  if (column < this.columns - 1 && this.fields[column+1][row] == -1) {
+    var index = this.fields[column][row];
+    this.fields[column][row] = -1;
+    this.fields[column+1][row] = index;
+    this.setMovementField(column+1, row);
+    return index;
+  }
+  return -1;
+};
+
+Metrix.Grid.prototype.setFieldLeft = function() {
+  var column = this.movementField.column;
+  var row = this.movementField.row;
+  if (column > 0 && this.fields[column-1][row] == -1) {
+    var index = this.fields[column][row];
+    this.fields[column][row] = -1;
+    this.fields[column-1][row] = index;
+    this.setMovementField(column-1, row);
+    return index;
+  }
+  return -1;
+};
