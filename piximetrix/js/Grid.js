@@ -61,6 +61,10 @@ Metrix.Grid.prototype.setBlockIndex = function(column, row, index) {
   this.fields[column][row] = index;
 };
 
+Metrix.Grid.prototype.getBlockIndex = function(column, row) {
+  return this.fields[column][row];
+};
+
 Metrix.Grid.prototype.setMovementField = function(column, row) {
   this.movementField.column = column;
   this.movementField.row = row;
@@ -72,6 +76,10 @@ Metrix.Grid.prototype.isMovementField = function(column, row) {
   else
     return false;
 };
+
+Metrix.Grid.prototype.isEmptyField = function(column, row) {
+  return this.fields[column][row] == -1;
+}; 
 
 Metrix.Grid.prototype.setFieldDown = function() {
   return this.setSelectedFieldDown(
@@ -115,4 +123,9 @@ Metrix.Grid.prototype.setFieldLeft = function() {
     return index;
   }
   return -1;
+};
+
+Metrix.Grid.prototype.countFields = function(column, row) {
+  var colorIdx = this.parent.blocks[this.fields[column][row]].colorIdx;
+  console.log("count fields by color "+colorIdx);
 };
