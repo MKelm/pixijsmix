@@ -33,7 +33,7 @@ Metrix.Board = function(pixi) {
 Metrix.Board.prototype.constructor = Metrix.Board;
 
 Metrix.Board.prototype.addRandomBlock = function() {
-  var blockRandColumn = Math.round(Math.random() * (this.columns - 1));
+  var blockRandColumn = Math.round(Math.random() * (this.grid.columns - 1));
   this.addBlock(blockRandColumn, 0);
 };
 
@@ -74,22 +74,8 @@ Metrix.Board.prototype.moveBlocks = function(enableMovement) {
   setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);
 };
 
-Metrix.Board.prototype.addKeyListeners = function() {
-  var scope = this;
-  document.addEventListener("keydown", 
-    function(e) {
-      if (e.keyCode == 40) {
-        var blockIndex = scope.grid.setFieldDown();
-        if (blockIndex > -1)
-          scope.blocks[blockIndex].moveDown();
-      } else if (e.keyCode == 39) {
-        var blockIndex = scope.grid.setFieldRight();
-        if (blockIndex > -1)
-          scope.blocks[blockIndex].moveRight();
-      } else if (e.keyCode == 37) {
-        var blockIndex = scope.grid.setFieldLeft();
-        if (blockIndex > -1)
-          scope.blocks[blockIndex].moveLeft();
-      }
-    }, false);
+Metrix.Board.prototype.setControl = function() {
+  this.control = new Metrix.Control(this);
+  this.control.setKeyEvents();
+  this.control.setButtonEvents();
 };
