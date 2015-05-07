@@ -33,19 +33,30 @@ Metrix.Board = function(pixi) {
 Metrix.Board.prototype.constructor = Metrix.Board;
 
 Metrix.Board.prototype.addRandomBlock = function() {
-  var blockRandColumn = Math.round(Math.random() * (this.grid.columns - 1));
-  this.addBlock(blockRandColumn, 0);
+  var loopCount = 0;
+  var added = false;
+  do {
+    var blockRandColumn = Math.round(Math.random() * (this.grid.columns - 1));
+    added = this.addBlock(blockRandColumn, 0);
+    loopCount++;
+  } while (loopCount < 100 && added === false);
+  return added;
 };
 
 Metrix.Board.prototype.addBlock = function(column, row) {
-  this.blocksMaxIndex += 1;
-  this.blocks[this.blocksMaxIndex].setPosition(column, row);
-  this.blocks[this.blocksMaxIndex].setRandomColor();
-  this.blocks[this.blocksMaxIndex].addGfx();
-  this.blocks[this.blocksMaxIndex].show();
-  // register block as grid field
-  this.grid.setBlockIndex(column, row, this.blocksMaxIndex);
-  this.grid.setMovementField(column, row); // every new block is located in a movement field
+  var blockIndex = this.grid.getBlockIndex(column, row);
+  if (blockIndex == -1) {
+    this.blocksMaxIndex += 1;
+    this.blocks[this.blocksMaxIndex].setPosition(column, row);
+    this.blocks[this.blocksMaxIndex].setRandomColor();
+    this.blocks[this.blocksMaxIndex].addGfx();
+    this.blocks[this.blocksMaxIndex].show();
+    // register block as grid field
+    this.grid.setBlockIndex(column, row, this.blocksMaxIndex);
+    this.grid.setMovementField(column, row); // every new block is located in a movement field
+    return true;
+  }
+  return false;
 };
 
 Metrix.Board.prototype.addPoints = function(pointsToAdd) {
@@ -61,15 +72,19 @@ Metrix.Board.prototype.moveBlocks = function(enableMovement) {
         var blockIndex = this.grid.setSelectedFieldDown(i, j);
         if (blockIndex > -1) {
           this.blocks[blockIndex].moveDown();
+          this.grid.countFields(i, j+1);
+          
         } else if (this.grid.isMovementField(i, j) == true) {
           enableMovement = false;
-          this.addPoints(100);
+          //this.addPoints(100);
         }
       }
     }
   } 
-  if (enableMovement !== true)
-    this.addRandomBlock();
+  if (enableMovement !== true) {
+    if (this.addRandomBlock() === false)
+      console.log("game over");
+  }
   var scope = this;
   setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);
 };
