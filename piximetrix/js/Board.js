@@ -66,17 +66,22 @@ Metrix.Board.prototype.addPoints = function(pointsToAdd) {
 
 Metrix.Board.prototype.moveBlocks = function(enableMovement) {
   if (enableMovement === true) {
+    this.grid.resetCheckStatus();
     for (var i = 0; i < this.grid.columns; i++) {
       // scan from bottom to top to avoid extra movements
       for (var j = this.grid.rows - 1; j > -1; j--) {
         var blockIndex = this.grid.setSelectedFieldDown(i, j);
         if (blockIndex > -1) {
           this.blocks[blockIndex].moveDown();
-          this.grid.countFields(i, j+1);
           
         } else if (this.grid.isMovementField(i, j) == true) {
           enableMovement = false;
-          //this.addPoints(100);
+          // count blocks by field to calculate points
+          var fieldCount = this.grid.countFields(i, j);
+          if (fieldCount > 3) {
+            console.log(fieldCount + " field points available");
+            this.addPoints(5 * fieldCount);
+          }
         }
       }
     }
@@ -84,6 +89,7 @@ Metrix.Board.prototype.moveBlocks = function(enableMovement) {
   if (enableMovement !== true) {
     if (this.addRandomBlock() === false)
       console.log("game over");
+    // else : todo remove marked blocks
   }
   var scope = this;
   setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);
