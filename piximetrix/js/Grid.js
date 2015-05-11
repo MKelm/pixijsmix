@@ -4,11 +4,15 @@ Metrix.Grid = function(parent, columns, rows) {
   this.rows = rows;
   
   this.fields = new Array(this.columns);
+  this.fieldsCheck = new Array(this.columns);
   for (var i = 0; i < this.columns; i++) {
     this.fields[i] = new Array(this.rows);
+    this.fieldsCheck[i] = new Array(this.rows);
     for (var j = 0; j < this.rows; j++) {
       // each field gets one block idx, -1 no block idx number
       this.fields[i][j] = -1;
+      // each field has a checked status
+      this.fieldsCheck[i][j] = false;
     }
   }
   
@@ -125,7 +129,60 @@ Metrix.Grid.prototype.setFieldLeft = function() {
   return -1;
 };
 
+Metrix.Grid.prototype.resetCheckStatus = function() {
+  for (var i = 0; i < this.columns; i++) {
+    for (var j = 0; j < this.rows; j++) {
+      this.fieldsCheck[i][j] = false;
+    }
+  }
+};
+
+Metrix.Grid.prototype.countFieldsRecursive = function(column, row, colorIdx) {
+  var fieldCount = 0;
+  var block = this.parent.blocks[this.fields[column][row]];
+  // check current field and further neighbours
+  if (block !== undefined && block.colorIdx == colorIdx) {
+    fieldCount++;
+    this.fieldsCheck[column][row] = true;
+  
+    // check left field neighbour
+    if (column > 0 && this.fieldsCheck[column-1][row] == false) {
+      this.fieldsCheck[column-1][row] = true;
+      var leftBlock = this.parent.blocks[this.fields[column-1][row]];
+      if (leftBlock !== undefined && leftBlock.colorIdx == colorIdx) {
+        fieldCount += this.countFieldsRecursive(column-1, row, colorIdx);
+      }
+    }
+    // check right field neighbour
+    if (column+1 < this.columns && this.fieldsCheck[column+1][row] == false) {
+      this.fieldsCheck[column+1][row] = true;
+      var rightBlock = this.parent.blocks[this.fields[column+1][row]];
+      if (rightBlock !== undefined && rightBlock.colorIdx == colorIdx) {
+        fieldCount += this.countFieldsRecursive(column+1, row, colorIdx);
+      }
+    }
+    // check bottom field neighbour
+    if (row+1 < this.rows && this.fieldsCheck[column][row+1] == false) {
+      this.fieldsCheck[column][row+1] = true;
+      var bottomBlock = this.parent.blocks[this.fields[column][row+1]];
+      if (bottomBlock !== undefined && bottomBlock.colorIdx == colorIdx) {
+        fieldCount += this.countFieldsRecursive(column, row+1, colorIdx);
+      }
+    }
+    // check top field neighbour
+    if (row > 0 && this.fieldsCheck[column][row-1] == false) {
+      this.fieldsCheck[column][row-1] = true;
+      var topBlock = this.parent.blocks[this.fields[column][row-1]];
+      if (topBlock !== undefined && topBlock.colorIdx == colorIdx) {
+        fieldCount += this.countFieldsRecursive(column, row-1, colorIdx);
+      }
+    }
+  }
+  return fieldCount;
+};
+
 Metrix.Grid.prototype.countFields = function(column, row) {
   var colorIdx = this.parent.blocks[this.fields[column][row]].colorIdx;
   console.log("count fields by color "+colorIdx);
+  return this.countFieldsRecursive(column, row, colorIdx);
 };
