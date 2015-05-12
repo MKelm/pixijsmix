@@ -59,6 +59,13 @@ Metrix.Board.prototype.addBlock = function(column, row) {
   return false;
 };
 
+Metrix.Board.prototype.removeBlock = function(index) {
+  this.blocks[index].removeGfx();
+  this.blocks.splice(index, 1);
+  this.blocksMaxIndex--;
+  this.grid.recalcFieldIndexValues(index);
+};
+
 Metrix.Board.prototype.addPoints = function(pointsToAdd) {
   this.points += pointsToAdd;
   this.pointsText.setText(this.pointsPrefixText + this.points);
@@ -81,6 +88,8 @@ Metrix.Board.prototype.moveBlocks = function(enableMovement) {
           if (fieldCount > 3) {
             console.log(fieldCount + " field points available");
             this.addPoints(5 * fieldCount);
+            // reset fields in grid to remove blocks
+            this.grid.resetFields(i, j);
           }
         }
       }
@@ -89,7 +98,6 @@ Metrix.Board.prototype.moveBlocks = function(enableMovement) {
   if (enableMovement !== true) {
     if (this.addRandomBlock() === false)
       console.log("game over");
-    // else : todo remove marked blocks
   }
   var scope = this;
   setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);
