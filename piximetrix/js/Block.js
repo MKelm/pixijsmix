@@ -42,6 +42,10 @@ Metrix.Block.prototype.addGfx = function() {
   this.parent.container.addChild(this.gfx);
 };
 
+Metrix.Block.prototype.removeGfx = function() {
+  this.parent.container.removeChild(this.gfx);
+};
+
 Metrix.Block.prototype.isVisible = function() {
   return this.gfx.visible;
 };
