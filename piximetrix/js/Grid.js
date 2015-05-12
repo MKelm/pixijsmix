@@ -183,6 +183,60 @@ Metrix.Grid.prototype.countFieldsRecursive = function(column, row, colorIdx) {
 
 Metrix.Grid.prototype.countFields = function(column, row) {
   var colorIdx = this.parent.blocks[this.fields[column][row]].colorIdx;
-  console.log("count fields by color "+colorIdx);
   return this.countFieldsRecursive(column, row, colorIdx);
+};
+
+Metrix.Grid.prototype.resetFieldsRecursive = function(column, row, colorIdx) {
+  var fieldCount = 0;
+  if (this.fields[column][row] > -1) {
+    var block = this.parent.blocks[this.fields[column][row]];
+    // check current field and further neighbours
+    if (block !== undefined && block.colorIdx == colorIdx) {
+      this.parent.removeBlock(this.fields[column][row]);
+      this.fields[column][row] = -1;
+
+      // check left field neighbour
+      if (column > 0 && this.fields[column-1][row] > -1) {
+        var leftBlock = this.parent.blocks[this.fields[column-1][row]];
+        if (leftBlock !== undefined && leftBlock.colorIdx == colorIdx) {
+          this.resetFieldsRecursive(column-1, row, colorIdx);
+        }
+      }
+      // check right field neighbour
+      if (column+1 < this.columns && this.fields[column+1][row] > -1) {
+        var rightBlock = this.parent.blocks[this.fields[column+1][row]];
+        if (rightBlock !== undefined && rightBlock.colorIdx == colorIdx) {
+          this.resetFieldsRecursive(column+1, row, colorIdx);
+        }
+      }
+      // check bottom field neighbour
+      if (row+1 < this.rows && this.fields[column][row+1] > -1) {
+        var bottomBlock = this.parent.blocks[this.fields[column][row+1]];
+        if (bottomBlock !== undefined && bottomBlock.colorIdx == colorIdx) {
+          this.resetFieldsRecursive(column, row+1, colorIdx);
+        }
+      }
+      // check top field neighbour
+      if (row > 0 && this.fields[column][row-1] > -1) {
+        var topBlock = this.parent.blocks[this.fields[column][row-1]];
+        if (topBlock !== undefined && topBlock.colorIdx == colorIdx) {
+          this.resetFieldsRecursive(column, row-1, colorIdx);
+        }
+      }
+    }
+  }
+};
+
+Metrix.Grid.prototype.resetFields = function(column, row) {
+  var colorIdx = this.parent.blocks[this.fields[column][row]].colorIdx;
+  return this.resetFieldsRecursive(column, row, colorIdx);
+};
+
+Metrix.Grid.prototype.recalcFieldIndexValues = function(minIndex) {
+  for (var i = 0; i < this.columns; i++) {
+    for (var j = 0; j < this.rows; j++) {
+      if (this.fields[i][j] >= minIndex)
+        this.fields[i][j]--;
+    }
+  }
 };
