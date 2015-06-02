@@ -19,12 +19,23 @@
       <li>add cell at 0x 0y</li>
     </ul>
     <script>
-      var linkedGrid = new LinkedGrid(10, 10, true);
+      // pixi js stuff
+      var renderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
+      renderer.resize(640, 480);
+      document.body.appendChild(renderer.view);
+      var container = new PIXI.Container(0x000000);
+    
+      // linked grid stuff
+      var linkedGrid = new LinkedGrid(container, 10, 10, true);
       var colorIndex = linkedGrid.addCellColor("0xFF00FF");
       linkedGrid.addCell(0, 0, colorIndex);
       linkedGrid.addCell(0, 0, colorIndex);
+      linkedGrid.addCell(3, 3, colorIndex);
       linkedGrid.moveCell(0, 0, 1, 1);
       linkedGrid.removeCell(0, 0);
+      
+      // final render
+      renderer.render(container);
     </script>
   </body>
 </html>
