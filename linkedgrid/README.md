@@ -12,10 +12,12 @@ Class properties:
 * field size columns
 * array with cell color values
 * array with cell objects
+* max index value of array with cell objects
 * 2d array with cell references
 
 Class methods:
 * set field size
 * add cell color
 * add cell (position, color index)
-* move cell (new position)
+* remvoe cell (position)
+* move cell (old position, new position)
