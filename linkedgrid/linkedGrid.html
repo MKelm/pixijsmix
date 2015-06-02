@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>pixi.js linked grid</title>
+    <style>
+        body {
+          margin: 10px;
+          padding: 10px;
+          background-color: #FFF;
+        }
+    </style>
+    <script src="../builds/pixi.v3.0.2.min.js"></script>
+    <script src="linkedGrid.js"></script>
+  </head>
+  <body>
+    <ul>
+      <li>linked grid test</li>
+      <li>init linked grid with 10x 10y</li>
+      <li>add cell at 0x 0y with cell color 0xFF00FF</li>
+    </ul>
+    <script>
+      var linkedGrid = new LinkedGrid(10, 10);
+      linkedGrid.addCell(0, 0, linkedGrid.addCellColor("0xFF00FF"));
+    </script>
+  </body>
+</html>
