@@ -1,5 +1,7 @@
-LinkedGrid = function(columns, rows, debug) {
+LinkedGrid = function(container, columns, rows, debug) {
   this.debug = debug | false;
+  
+  this.container = container; // a display container to add gfx elements to
 
   this.columns = columns;
   this.rows = rows;
@@ -38,9 +40,18 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
   if (this.maxCellIndex < this.cells.length && this.field[column][row] === null) {
     if (this.debug == true)
       console.log("free place in cells array to add");
+      
+    // prepare gfx to add it to display container
+    var gfx = new PIXI.Graphics();
+    gfx.beginFill(0xFFFFFF, 1);
+    gfx.drawRect(
+      0, 0,
+      10, 10
+    ); // todo set position / size in relation to container size
+    this.container.addChild(gfx);
     
     this.cells[this.maxCellIndex] = {
-      gfx: "reference todo",
+      gfx: gfx,
       column: column,
       row: row,
       colorIndex: colorIndex
@@ -61,9 +72,9 @@ LinkedGrid.prototype.removeCell = function(column, row) {
     if (this.debug == true)
       console.log("valid place in cells array to remove");
     
-    this.field[column][row] = null;
-    // todo remove pixi.js gfx object
+    this.container.removeChild(this.field[column][row].gfx);
     // todo remove cell object
+    this.field[column][row] = null;
     
     return true;
   } else if (this.debug == true) {
