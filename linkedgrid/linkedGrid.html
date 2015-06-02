@@ -15,11 +15,16 @@
     <ul>
       <li>linked grid test</li>
       <li>init linked grid with 10x 10y</li>
-      <li>add cell at 0x 0y with cell color 0xFF00FF</li>
+      <li>add cell color 0xFF00FF</li>
+      <li>add cell at 0x 0y</li>
     </ul>
     <script>
-      var linkedGrid = new LinkedGrid(10, 10);
-      linkedGrid.addCell(0, 0, linkedGrid.addCellColor("0xFF00FF"));
+      var linkedGrid = new LinkedGrid(10, 10, true);
+      var colorIndex = linkedGrid.addCellColor("0xFF00FF");
+      linkedGrid.addCell(0, 0, colorIndex);
+      linkedGrid.addCell(0, 0, colorIndex);
+      linkedGrid.moveCell(0, 0, 1, 1);
+      linkedGrid.removeCell(0, 0);
     </script>
   </body>
 </html>
