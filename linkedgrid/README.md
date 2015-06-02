@@ -1,7 +1,7 @@
 # linked grid
 
 The LinkedGrid class should offer a two-dimensional array to handle field cell references. 
-Additionally the class should contain a array for all field cells to handle more specific data:
+Additionally the class should contain an array for all field cells to handle more specific data:
 * Reference to pixi.js GFX element
 * Column value
 * Row value
