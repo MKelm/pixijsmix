@@ -7,4 +7,15 @@ Additionally the class should contain a linked list for all grid fields to handl
 * Row value
 * Color index value
 
-The class needs a list with color values and a method to add color values. 
+Class properties:
+* grid size rows
+* grid size columns
+* array with field color values
+* array with field objects
+* 2d array for grid field references
+
+Class methods:
+* set grid size
+* add field color
+* add field (position, color index)
+* move field (new position)
