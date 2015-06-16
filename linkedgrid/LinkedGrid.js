@@ -1,10 +1,63 @@
-LinkedGrid = function(container, columns, rows, debug) {
+LinkedGrid = function(container, columns, rows, maxWidth, maxHeight, debug) {
   this.debug = debug | false;
   
   this.container = container; // a display container to add gfx elements to
 
+  // max/full width of display container
+  this.maxWidth = maxWidth;
+  this.maxHeight = maxHeight;
+  
+  // grid size by columns/rows
   this.columns = columns;
   this.rows = rows;
+  
+  // calculate cell size / margin depending on grid size and cell amount
+  this.cellWidth = 0;
+  this.cellHeight = 0;
+  this.cellMarginTop = 0;
+  this.cellMarginLeft = 0;
+  if (this.rows > this.columns) {
+    // calculate cell size to get correct cell proportions
+    if (this.maxWidth < this.maxHeight) {
+      this.cellWidth = this.maxWidth / this.columns;
+      this.cellHeight = this.maxWidth / this.columns;
+      // calculate cell margin to center grid cells
+      this.cellMarginTop = (this.maxHeight - this.cellHeight * this.rows) / 2;
+    } else {
+      this.cellWidth = this.maxHeight / this.rows;
+      this.cellHeight = this.maxHeight / this.rows;
+      // calculate cell margin to center grid cells
+      this.cellMarginLeft = (this.maxWidth - this.cellWidth * this.columns) / 2;
+    }
+  } else if (this.rows < this.columns) {
+    // calculate cell size to get correct cell proportions
+    if (this.maxWidth > this.maxHeight) {
+      this.cellWidth = this.maxHeight / this.rows;
+      this.cellHeight = this.maxHeight / this.rows;
+      // calculate cell margin to center grid cells
+      this.cellMarginLeft = (this.maxWidth - this.cellWidth * this.columns) / 2;
+    } else {
+      this.cellWidth = this.maxWidth / this.columns;
+      this.cellHeight = this.maxWidth / this.columns;
+      // calculate cell margin to center grid cells
+      this.cellMarginTop = (this.maxHeight - this.cellHeight * this.rows) / 2;
+    }
+  } else if (this.rows == this.columns) {
+    // calculate cell size to get correct cell proportions
+    if (this.maxWidth < this.maxHeight) {
+      this.cellWidth = this.maxWidth / this.columns;
+      this.cellHeight = this.maxWidth / this.columns;
+    } else {
+      this.cellWidth = this.maxHeight / this.columns;
+      this.cellHeight = this.maxHeight / this.columns;
+    }
+    // calculate cell margin to center grid cells
+    this.cellMarginLeft = (this.maxWidth - this.cellWidth * this.columns) / 2;
+    this.cellMarginTop = (this.maxHeight - this.cellHeight * this.rows) / 2;
+  }
+  
+  if (this.debug == true)
+    console.log("cell size", this.cellWidth, this.cellHeight);
   
   this.colors = [];
   
@@ -15,7 +68,7 @@ LinkedGrid = function(container, columns, rows, debug) {
   this.maxCellIndex = -1; // maximal used cell index
   
   this.field = new Array(this.columns); // 2d array with cell references
-  for (var column = 0; column < columns; column++) {
+  for (var column = 0; column < this.columns; column++) {
     this.field[column] = new Array(this.rows);
     for (var row = 0; row < rows; row++) {
       this.field[column][row] = null;
@@ -43,13 +96,13 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
       
     // prepare gfx to add it to display container
     var gfx = new PIXI.Graphics();
-    gfx.beginFill(0xFFFFFF, 1);
+    gfx.beginFill(this.colors[colorIndex], 1);
     gfx.drawRect(
-      0, 0,
-      10, 10
-    ); // todo set position / size in relation to container size
+      this.cellMarginLeft + column * this.cellWidth, this.cellMarginTop + row * this.cellHeight,
+      this.cellWidth, this.cellHeight
+    );
     this.container.addChild(gfx);
-    
+
     this.cells[this.maxCellIndex] = {
       gfx: gfx,
       column: column,
