@@ -12,30 +12,68 @@
     <script src="linkedGrid.js"></script>
   </head>
   <body>
-    <ul>
-      <li>linked grid test</li>
-      <li>init linked grid with 10x 10y</li>
-      <li>add cell color 0xFF00FF</li>
-      <li>add cell at 0x 0y</li>
-    </ul>
     <script>
-      // pixi js stuff
-      var renderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
-      renderer.resize(640, 480);
-      document.body.appendChild(renderer.view);
-      var container = new PIXI.Container(0x000000);
-    
-      // linked grid stuff
-      var linkedGrid = new LinkedGrid(container, 10, 10, true);
-      var colorIndex = linkedGrid.addCellColor("0xFF00FF");
-      linkedGrid.addCell(0, 0, colorIndex);
-      linkedGrid.addCell(0, 0, colorIndex);
-      linkedGrid.addCell(3, 3, colorIndex);
-      linkedGrid.moveCell(0, 0, 1, 1);
-      linkedGrid.removeCell(0, 0);
+      function setTestGrid(columns, rows, maxWidth, maxHeight) {
+        // pixi js stuff
+        var renderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
+        renderer.resize(maxWidth, maxHeight);
+        document.body.appendChild(renderer.view);
+        var container = new PIXI.Container(0x00000);
       
-      // final render
-      renderer.render(container);
+        // linked grid stuff
+        var linkedGrid = new LinkedGrid(container, columns, rows, maxWidth, maxHeight, true);
+        var colorIndex = linkedGrid.addCellColor("0xFF0000");
+        linkedGrid.addCell(0, 0, colorIndex);
+        linkedGrid.addCell(columns-1, 0, colorIndex);
+        linkedGrid.addCell(columns-1, rows-1, colorIndex);
+        linkedGrid.addCell(0, rows-1, colorIndex);
+        
+        // final render
+        renderer.render(container);
+      }
     </script>
+    
+    <hr>
+    <h3>COLUMNS == ROWS, WIDTH &gt; HEIGHT (320x240)</h3>
+    <script>
+      setTestGrid(10, 10, 320, 240);
+    </script>
+    <h3>COLUMNS == ROWS, WIDTH &lt; HEIGHT (240x320)</h3>
+    <script>
+      setTestGrid(10, 10, 240, 320);
+    </script>
+    <h3>COLUMNS == ROWS, WIDTH == HEIGHT (320x320)</h3>
+    <script>
+      setTestGrid(10, 10, 320, 320);
+    </script>
+    <hr>
+    
+    <h3>COLUMNS &gt; ROWS, WIDTH &gt; HEIGHT (320x240)</h3>
+    <script>
+      setTestGrid(10, 8, 320, 240);
+    </script>
+    <h3>COLUMNS &gt; ROWS, WIDTH &lt; HEIGHT (240x320)</h3>
+    <script>
+      setTestGrid(10, 8, 240, 320);
+    </script>
+    <h3>COLUMNS &gt; ROWS, WIDTH == HEIGHT (320x320)</h3>
+    <script>
+      setTestGrid(10, 8, 320, 320);
+    </script>
+    <hr>
+    
+    <h3>COLUMNS &lt; ROWS, WIDTH &gt; HEIGHT (320x240)</h3>
+    <script>
+      setTestGrid(8, 10, 320, 240);
+    </script>
+    <h3>COLUMNS &lt; ROWS, WIDTH &lt; HEIGHT (240x320)</h3>
+    <script>
+      setTestGrid(8, 10, 240, 320);
+    </script>
+    <h3>COLUMNS &lt; ROWS, WIDTH == HEIGHT (320x320)</h3>
+    <script>
+      setTestGrid(8, 10, 320, 320);
+    </script>
+    <hr>
   </body>
 </html>
