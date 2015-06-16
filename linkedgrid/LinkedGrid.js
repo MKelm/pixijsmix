@@ -112,6 +112,9 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
     this.field[column][row] = this.cells[this.maxCellIndex];
     this.maxCellIndex++;
     
+    if (this.debug == true)
+      console.log("added cell with maximal cell index", this.maxCellIndex);
+    
     return true;
   } else if (this.debug == true) {
     console.log("no free place in cells array to add");
@@ -126,8 +129,20 @@ LinkedGrid.prototype.removeCell = function(column, row) {
       console.log("valid place in cells array to remove");
     
     this.container.removeChild(this.field[column][row].gfx);
-    // todo remove cell object
-    this.field[column][row] = null;
+
+    // remove cell object and move all remaining cells by one position to keep cells array length
+    for (var i = 0; i < this.maxCellIndex; i++) {
+      if (this.cells[i] == this.field[column][row]) {
+        this.field[column][row] = null;
+        for (var j = i; j < this.cells.length-1; j++) {
+          this.cells[j] = this.cells[j+1];
+        }
+        this.maxCellIndex--;
+        if (this.debug == true) 
+          console.log("removed cell object with new maximal cell index", this.maxCellIndex);
+        break;
+      }
+    }
     
     return true;
   } else if (this.debug == true) {
