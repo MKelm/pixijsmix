@@ -25,8 +25,15 @@
         var colorIndex = linkedGrid.addCellColor("0xFF0000");
         linkedGrid.addCell(0, 0, colorIndex);
         linkedGrid.addCell(columns-1, 0, colorIndex);
+        
+        linkedGrid.addCell(Math.floor(columns/2), Math.floor(rows/2), colorIndex);
+        linkedGrid.removeCell(Math.floor(columns/2), Math.floor(rows/2), colorIndex);
+        
         linkedGrid.addCell(columns-1, rows-1, colorIndex);
         linkedGrid.addCell(0, rows-1, colorIndex);
+        
+        linkedGrid.addCell(1, 0, colorIndex);
+        linkedGrid.removeCell(1, 0, colorIndex);
         
         // final render
         renderer.render(container);
