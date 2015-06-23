@@ -3,6 +3,28 @@ LinkedGrid = function(container, columns, rows, maxWidth, maxHeight, debug) {
   
   this.container = container; // a display container to add gfx elements to
 
+  this.setSize(columns, rows, maxWidth, maxHeight);
+  
+  this.colors = [];
+  
+  this.cells = new Array(this.columns * this.rows); // array with cell objects
+  for (var i = 0; i < this.columns * this.rows; i++) {
+    this.cells[i] = null;
+  }
+  this.maxCellIndex = -1; // maximal used cell index
+  
+  this.field = new Array(this.columns); // 2d array with cell references
+  for (var column = 0; column < this.columns; column++) {
+    this.field[column] = new Array(this.rows);
+    for (var row = 0; row < rows; row++) {
+      this.field[column][row] = null;
+    }
+  }
+};
+
+LinkedGrid.prototype.constructor = LinkedGrid;
+
+LinkedGrid.prototype.setSize = function(columns, rows, maxWidth, maxHeight) {
   // max/full width of display container
   this.maxWidth = maxWidth;
   this.maxHeight = maxHeight;
@@ -57,30 +79,13 @@ LinkedGrid = function(container, columns, rows, maxWidth, maxHeight, debug) {
   }
   
   if (this.debug == true)
-    console.log("cell size", this.cellWidth, this.cellHeight);
-  
-  this.colors = [];
-  
-  this.cells = new Array(this.columns * this.rows); // array with cell objects
-  for (var i = 0; i < this.columns * this.rows; i++) {
-    this.cells[i] = null;
-  }
-  this.maxCellIndex = -1; // maximal used cell index
-  
-  this.field = new Array(this.columns); // 2d array with cell references
-  for (var column = 0; column < this.columns; column++) {
-    this.field[column] = new Array(this.rows);
-    for (var row = 0; row < rows; row++) {
-      this.field[column][row] = null;
-    }
-  }
+    console.log("changed grid size with cell size", this.cellWidth, this.cellHeight);
 };
 
-LinkedGrid.prototype.constructor = LinkedGrid;
-
-LinkedGrid.prototype.setSize = function(columns, rows) {
-  this.columns = columns;
-  this.rows = rows;
+LinkedGrid.prototype.resize = function(maxWidth, maxHeight) {
+  if (this.debug == true)
+    console.log("resize grid maximal display size", maxWidth, maxHeight);
+  this.setSize(this.columns, this.rows, maxWidth, maxHeight);
 };
 
 LinkedGrid.prototype.addCellColor = function(color) {
