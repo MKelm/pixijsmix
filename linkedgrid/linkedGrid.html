@@ -24,6 +24,10 @@
         var linkedGrid = new LinkedGrid(container, columns, rows, maxWidth, maxHeight, true);
         var colorIndex = linkedGrid.addCellColor("0xFF0000");
         linkedGrid.addCell(0, 0, colorIndex);
+        
+        linkedGrid.addCell(1, 1, colorIndex);
+        linkedGrid.moveCell(1, 1, 2, 2);
+        
         linkedGrid.addCell(columns-1, 0, colorIndex);
         
         linkedGrid.addCell(Math.floor(columns/2), Math.floor(rows/2), colorIndex);
