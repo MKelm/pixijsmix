@@ -102,7 +102,8 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
       this.cellWidth, this.cellHeight
     );
     this.container.addChild(gfx);
-
+    
+    this.maxCellIndex++;
     this.cells[this.maxCellIndex] = {
       gfx: gfx,
       column: column,
@@ -110,7 +111,6 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
       colorIndex: colorIndex
     };
     this.field[column][row] = this.cells[this.maxCellIndex];
-    this.maxCellIndex++;
     
     if (this.debug == true)
       console.log("added cell with maximal cell index", this.maxCellIndex);
@@ -131,7 +131,7 @@ LinkedGrid.prototype.removeCell = function(column, row) {
     this.container.removeChild(this.field[column][row].gfx);
 
     // remove cell object and move all remaining cells by one position to keep cells array length
-    for (var i = 0; i < this.maxCellIndex; i++) {
+    for (var i = 0; i <= this.maxCellIndex; i++) {
       if (this.cells[i] == this.field[column][row]) {
         this.field[column][row] = null;
         for (var j = i; j < this.cells.length-1; j++) {
@@ -152,6 +152,15 @@ LinkedGrid.prototype.removeCell = function(column, row) {
 };
 
 LinkedGrid.prototype.moveCell = function(sColumn, sRow, tColumn, tRow) {
-  // we have to determine if the source cell is not set and the target cell is free
-  console.log(this.field[sColumn][sRow], this.field[tColumn][tRow]);
+  // we have to determine if the source cell has been set and the target cell is free
+  if (this.maxCellIndex > -1 && this.field[sColumn][sRow] !== null && this.field[tColumn][tRow] === null) {
+    if (this.debug == true)
+      console.log("move cell from / to", sColumn, sRow, tColumn, tRow);
+    var colorIndex = this.field[sColumn][sRow].colorIndex;
+    this.removeCell(sColumn, sRow);
+    this.addCell(tColumn, tRow, colorIndex);
+  } else {
+    if (this.debug == true)
+      console.log("invalid arguments to move cell");
+  }
 };
