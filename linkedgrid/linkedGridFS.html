@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>pixi.js linked grid fullscreen</title>
+    <style>
+        body {
+          margin: 0px;
+          padding: 0px;
+          background-color: #000;
+        }
+    </style>
+    <script src="../builds/pixi.v3.0.2.min.js"></script>
+    <script src="linkedGrid.js"></script>
+  </head>
+  <body>
+    <script>
+      var pixiRenderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
+      var pixiContainer = new PIXI.Container(0x00000);
+    
+      function setTestGridFullscreen(columns, rows) {
+        // pixi js stuff
+        var maxWidth = window.innerWidth;
+        var maxHeight = window.innerHeight;
+        pixiRenderer.resize(maxWidth, maxHeight);
+        document.body.appendChild(pixiRenderer.view);
+      
+        // linked grid stuff
+        var linkedGrid = new LinkedGrid(pixiContainer, columns, rows, maxWidth, maxHeight, false);
+        var colorIndex = linkedGrid.addCellColor("0xFF0000");
+        linkedGrid.addCell(0, 0, colorIndex);
+        
+        linkedGrid.addCell(1, 1, colorIndex);
+        linkedGrid.moveCell(1, 1, 2, 2);
+        
+        linkedGrid.addCell(columns-1, 0, colorIndex);
+        
+        linkedGrid.addCell(Math.floor(columns/2), Math.floor(rows/2), colorIndex);
+        linkedGrid.removeCell(Math.floor(columns/2), Math.floor(rows/2), colorIndex);
+        
+        linkedGrid.addCell(columns-1, rows-1, colorIndex);
+        linkedGrid.addCell(0, rows-1, colorIndex);
+        
+        linkedGrid.addCell(1, 0, colorIndex);
+        linkedGrid.removeCell(1, 0, colorIndex);
+        
+        // final render
+        pixiRenderer.render(pixiContainer);
+      }
+      
+      window.addEventListener('resize', function(event) {
+        pixiRenderer.resize(window.innerWidth, window.innerHeight);
+        console.log("resize event", window.innerWidth, window.innerHeight);
+        pixiRenderer.render(pixiContainer);
+      });
+      
+    </script>
+
+    <script>
+      setTestGridFullscreen(8, 10);
+    </script>
+
+  </body>
+</html>
