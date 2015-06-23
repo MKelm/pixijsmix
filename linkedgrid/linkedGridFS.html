@@ -15,6 +15,7 @@
     <script>
       var pixiRenderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
       var pixiContainer = new PIXI.Container(0x00000);
+      var linkedGrid = null;
     
       function setTestGridFullscreen(columns, rows) {
         // pixi js stuff
@@ -24,7 +25,7 @@
         document.body.appendChild(pixiRenderer.view);
       
         // linked grid stuff
-        var linkedGrid = new LinkedGrid(pixiContainer, columns, rows, maxWidth, maxHeight, false);
+        linkedGrid = new LinkedGrid(pixiContainer, columns, rows, maxWidth, maxHeight, true);
         var colorIndex = linkedGrid.addCellColor("0xFF0000");
         linkedGrid.addCell(0, 0, colorIndex);
         
@@ -48,7 +49,7 @@
       
       window.addEventListener('resize', function(event) {
         pixiRenderer.resize(window.innerWidth, window.innerHeight);
-        console.log("resize event", window.innerWidth, window.innerHeight);
+        linkedGrid.resize(window.innerWidth, window.innerHeight);
         pixiRenderer.render(pixiContainer);
       });
       
