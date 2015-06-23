@@ -82,10 +82,26 @@ LinkedGrid.prototype.setSize = function(columns, rows, maxWidth, maxHeight) {
     console.log("changed grid size with cell size", this.cellWidth, this.cellHeight);
 };
 
+LinkedGrid.prototype.redrawCells = function() {
+  // we have to remove all container children and redraw children to get new cells on resize events
+  for (var i = 0; i <= this.maxCellIndex; i++) {
+    this.container.removeChild(this.cells[i].gfx);
+    
+    this.cells[i].gfx = new PIXI.Graphics();
+    this.cells[i].gfx.beginFill(this.colors[this.cells[i].colorIndex], 1);
+    this.cells[i].gfx.drawRect(
+      this.cellMarginLeft + this.cells[i].column * this.cellWidth, this.cellMarginTop + this.cells[i].row * this.cellHeight,
+      this.cellWidth, this.cellHeight
+    );
+    this.container.addChild(this.cells[i].gfx);
+  }
+};
+
 LinkedGrid.prototype.resize = function(maxWidth, maxHeight) {
   if (this.debug == true)
     console.log("resize grid maximal display size", maxWidth, maxHeight);
   this.setSize(this.columns, this.rows, maxWidth, maxHeight);
+  this.redrawCells();
 };
 
 LinkedGrid.prototype.addCellColor = function(color) {
