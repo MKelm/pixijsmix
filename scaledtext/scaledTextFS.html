@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <title>pixi.js scaled text fullscreen</title>
+    <style>
+        body {
+          margin: 0px;
+          padding: 0px;
+          background-color: #000;
+        }
+    </style>
+    <script src="../builds/pixi.v3.0.2.min.js"></script>
+    <script src="ScaledText.js"></script>
+  </head>
+  <body>
+    <script>
+      var pixiRenderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
+      var pixiContainer = new PIXI.Container(0x00000);
+      var scaledTextTopLeft = null;
+      var scaledTextTopRight = null;
+      var scaledTextBottomLeft = null;
+      var scaledTextBottomRight = null;
+    
+      function setTestFrameFullscreen() {
+        // pixi js stuff
+        var maxWidth = window.innerWidth;
+        var maxHeight = window.innerHeight;
+        pixiRenderer.resize(maxWidth, maxHeight);
+        document.body.appendChild(pixiRenderer.view);
+      
+        // scaled text stuff top left
+        scaledTextTopLeft = new ScaledText(pixiContainer, maxWidth, maxHeight, true);
+        scaledTextTopLeft.setText("TopLeft");
+        scaledTextTopLeft.setPosition("top", "left", 10, 10);
+        
+        // scaled text stuff top right
+        scaledTextTopRight = new ScaledText(pixiContainer, maxWidth, maxHeight, true);
+        scaledTextTopRight.setText("TopRight");
+        scaledTextTopRight.setPosition("top", "right", 10, 10);
+        
+        // scaled text stuff bottom left
+        scaledTextBottomLeft = new ScaledText(pixiContainer, maxWidth, maxHeight, true);
+        scaledTextBottomLeft.setText("BottomLeft");
+        scaledTextBottomLeft.setPosition("bottom", "left", 10, 10);
+        
+        // scaled text stuff bottom right
+        scaledTextBottomRight = new ScaledText(pixiContainer, maxWidth, maxHeight, true);
+        scaledTextBottomRight.setText("BottomRight");
+        scaledTextBottomRight.setPosition("bottom", "right", 10, 10);
+        
+        // final render
+        pixiRenderer.render(pixiContainer);
+      }
+      
+      window.addEventListener('resize', function(event) {
+        pixiRenderer.resize(window.innerWidth, window.innerHeight);
+        scaledTextTopLeft.resize(window.innerWidth, window.innerHeight);
+        scaledTextTopRight.resize(window.innerWidth, window.innerHeight);
+        scaledTextBottomLeft.resize(window.innerWidth, window.innerHeight);
+        scaledTextBottomRight.resize(window.innerWidth, window.innerHeight);
+        pixiRenderer.render(pixiContainer);
+      });
+      
+    </script>
+
+    <script>
+      setTestFrameFullscreen();
+    </script>
+
+  </body>
+</html>
