@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <title>pixi.js scaled text</title>
+    <style>
+        body {
+          margin: 10px;
+          padding: 10px;
+          background-color: #FFF;
+        }
+    </style>
+    <script src="../builds/pixi.v3.0.2.min.js"></script>
+    <script src="ScaledText.js"></script>
+  </head>
+  <body>
+    <script>
+      function setTestFrame(maxWidth, maxHeight) {
+        // pixi js stuff
+        var renderer = PIXI.autoDetectRenderer(0, 0, {transparent : false});
+        renderer.resize(maxWidth, maxHeight);
+        document.body.appendChild(renderer.view);
+        var container = new PIXI.Container(0x00000);
+      
+        // scaled text stuff top left
+        var scaledTextTopLeft = new ScaledText(container, maxWidth, maxHeight, true);
+        scaledTextTopLeft.setText("TopLeft");
+        scaledTextTopLeft.setPosition("top", "left", 10, 10);
+        
+        // scaled text stuff top right
+        var scaledTextTopLeft = new ScaledText(container, maxWidth, maxHeight, true);
+        scaledTextTopLeft.setText("TopRight");
+        scaledTextTopLeft.setPosition("top", "right", 10, 10);
+        
+        // scaled text stuff bottom left
+        var scaledTextTopLeft = new ScaledText(container, maxWidth, maxHeight, true);
+        scaledTextTopLeft.setText("BottomLeft");
+        scaledTextTopLeft.setPosition("bottom", "left", 10, 10);
+        
+        // scaled text stuff bottom right
+        var scaledTextTopLeft = new ScaledText(container, maxWidth, maxHeight, true);
+        scaledTextTopLeft.setText("BottomRight");
+        scaledTextTopLeft.setPosition("bottom", "right", 10, 10);
+        
+        // final render
+        renderer.render(container);
+      }
+    </script>
+    
+    <hr>
+    <h3>COLUMNS == ROWS, WIDTH &gt; HEIGHT (320x240)</h3>
+    <script>
+      setTestFrame(320, 240);
+    </script>
+    <h3>COLUMNS == ROWS, WIDTH &lt; HEIGHT (240x320)</h3>
+    <script>
+      setTestFrame(240, 320);
+    </script>
+    <h3>COLUMNS == ROWS, WIDTH == HEIGHT (320x320)</h3>
+    <script>
+      setTestFrame(320, 320);
+    </script>
+    <hr>
+    
+    <h3>COLUMNS &gt; ROWS, WIDTH &gt; HEIGHT (320x240)</h3>
+    <script>
+      setTestFrame(320, 240);
+    </script>
+    <h3>COLUMNS &gt; ROWS, WIDTH &lt; HEIGHT (240x320)</h3>
+    <script>
+      setTestFrame(240, 320);
+    </script>
+    <h3>COLUMNS &gt; ROWS, WIDTH == HEIGHT (320x320)</h3>
+    <script>
+      setTestFrame(320, 320);
+    </script>
+    <hr>
+    
+    <h3>COLUMNS &lt; ROWS, WIDTH &gt; HEIGHT (320x240)</h3>
+    <script>
+      setTestFrame(320, 240);
+    </script>
+    <h3>COLUMNS &lt; ROWS, WIDTH &lt; HEIGHT (240x320)</h3>
+    <script>
+      setTestFrame(240, 320);
+    </script>
+    <h3>COLUMNS &lt; ROWS, WIDTH == HEIGHT (320x320)</h3>
+    <script>
+      setTestFrame(320, 320);
+    </script>
+    <hr>
+  </body>
+</html>
