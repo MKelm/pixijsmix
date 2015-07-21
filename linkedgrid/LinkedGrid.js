@@ -131,7 +131,8 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
       gfx: gfx,
       column: column,
       row: row,
-      colorIndex: colorIndex
+      colorIndex: colorIndex,
+      checkStatus: false
     };
     this.field[column][row] = this.cells[this.maxCellIndex];
     
@@ -141,6 +142,73 @@ LinkedGrid.prototype.addCell = function(column, row, colorIndex) {
     return true;
   } else if (this.debug == true) {
     console.log("no free place in cells array to add");
+  }
+  return false;
+};
+
+LinkedGrid.prototype.resetCellsCheckStatus = function() {
+  if (this.maxCellIndex > -1) {
+    for (var i = 0; i < this.maxCellIndex; i++) {
+      this.cells[i].checkStatus = false;
+    }
+  }
+};
+
+LinkedGrid.prototype.countCellsByFieldRecursive = function(column, row, colorIndex, removeCells) {
+  var fieldCount = 0;
+  var field = this.field[column][row];
+  // check current field and further neighbours
+  if (field !== null && field.colorIndex == colorIndex) {
+    fieldCount++;
+    if (removeCells === true)
+      this.removeCell(column, row);
+    else 
+      field.checkStatus = true;
+  
+    // check left field neighbour
+    if (column > 0 && this.field[column-1][row] !== null && this.field[column-1][row].checkStatus == false) {
+      if (removeCells === false)
+        this.field[column-1][row].checkStatus = true;
+      var leftField = this.field[column-1][row];
+      if (leftField !== undefined && leftField.colorIndex == colorIndex) {
+        fieldCount += this.countCellsByFieldRecursive(column-1, row, colorIndex, removeCells);
+      }
+    }
+    // check right field neighbour
+    if (column+1 < this.columns && this.field[column+1][row] !== null && this.field[column+1][row].checkStatus == false) {
+      if (removeCells === false)
+        this.field[column+1][row].checkStatus = true;
+      var rightField = this.field[column+1][row];
+      if (rightField !== undefined && rightField.colorIndex == colorIndex) {
+        fieldCount += this.countCellsByFieldRecursive(column+1, row, colorIndex, removeCells);
+      }
+    }
+    // check bottom field neighbour
+    if (row+1 < this.rows && this.field[column][row+1] !== null && this.field[column][row+1].checkStatus == false) {
+      if (removeCells === false)
+        this.field[column][row+1].checkStatus = true;
+      var bottomField = this.field[column][row+1];
+      if (bottomField !== undefined && bottomField.colorIndex == colorIndex) {
+        fieldCount += this.countCellsByFieldRecursive(column, row+1, colorIndex, removeCells);
+      }
+    }
+    // check top field neighbour
+    if (row > 0 && this.field[column][row-1] !== null && this.field[column][row-1].checkStatus == false) {
+      if (removeCells === false)
+        this.field[column][row-1].checkStatus = true;
+      var topField = this.field[column][row-1];
+      if (topField !== undefined && topField.colorIndex == colorIndex) {
+        fieldCount += this.countCellsByFieldRecursive(column, row-1, colorIndex, removeCells);
+      }
+    }
+  }
+  return fieldCount;
+};
+
+LinkedGrid.prototype.countCellsByField = function(column, row, remove) {
+  if (this.maxCellIndex > -1 && this.field[column][row] !== null) {
+    var colorIndex = this.field[column][row].colorIndex;
+    return this.countCellsByFieldRecursive(column, row, colorIndex, remove || false);
   }
   return false;
 };
@@ -182,8 +250,10 @@ LinkedGrid.prototype.moveCell = function(sColumn, sRow, tColumn, tRow) {
     var colorIndex = this.field[sColumn][sRow].colorIndex;
     this.removeCell(sColumn, sRow);
     this.addCell(tColumn, tRow, colorIndex);
+    return true;
   } else {
     if (this.debug == true)
       console.log("invalid arguments to move cell");
+    return false;
   }
 };
