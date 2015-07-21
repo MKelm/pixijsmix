@@ -37,6 +37,11 @@ Metrix.Board = function(pixi) {
     scope.creditsText.resize(scope.pixi.linkedGrid);
   });
   
+  this.moveableGridCell = {
+    column: -1,
+    row: -1
+  };
+  
 };
 
 Metrix.Board.prototype.constructor = Metrix.Board;
@@ -44,51 +49,53 @@ Metrix.Board.prototype.constructor = Metrix.Board;
 Metrix.Board.prototype.addRandomBlock = function() {
   var loopCount = 0;
   var added = false;
+  this.moveableGridCell.column = -1;
+  this.moveableGridCell.row = -1;
   do {
     var blockRandColumn = Math.round(Math.random() * (this.pixi.linkedGrid.columns - 1));
     var blockRandColor = Math.round(Math.random() * this.blockColorsMaxIndex);
     added = this.pixi.linkedGrid.addCell(blockRandColumn, 0, blockRandColor);
     loopCount++;
   } while (loopCount < 100 && added === false);
+  if (added === true) {
+    this.moveableGridCell.column = blockRandColumn;
+    this.moveableGridCell.row = 0;
+  }
   return added;
 };
 
 Metrix.Board.prototype.addPoints = function(pointsToAdd) {
   this.points += pointsToAdd;
   this.pointsText.setText(this.pointsPrefixText + this.points);
+  this.pointsText.setPosition("bottom", "left", 10, 10);
 };
 
 Metrix.Board.prototype.moveBlocks = function(enableMovement) {
   // TODO TODO TODO
-  /*if (enableMovement === true) {
-    this.grid.resetCheckStatus();
-    for (var i = 0; i < this.grid.columns; i++) {
-      // scan from bottom to top to avoid extra movements
-      for (var j = this.grid.rows - 1; j > -1; j--) {
-        var blockIndex = this.grid.setSelectedFieldDown(i, j);
-        if (blockIndex > -1) {
-          this.blocks[blockIndex].moveDown();
-          
-        } else if (this.grid.isFallingField(i, j) == true) {
-          // count blocks by field to calculate points
-          var fieldCount = this.grid.countFields(i, j);
-          if (fieldCount > 3) {
-            console.log(fieldCount + " field points available");
-            this.addPoints(5 * fieldCount);
-            // reset fields in grid to remove blocks
-            this.grid.resetFields(i, j);
-          }
-        }
+  if (enableMovement === true) {
+    var moved = false;
+    if (this.pixi.linkedGrid.moveCell(
+          this.moveableGridCell.column, this.moveableGridCell.row, 
+          this.moveableGridCell.column, this.moveableGridCell.row+1
+        ) === true) {
+      this.moveableGridCell.row++;
+      var cellsCount = this.pixi.linkedGrid.countCellsByField(
+        this.moveableGridCell.column, this.moveableGridCell.row
+      );
+      this.pixi.linkedGrid.resetCellsCheckStatus();
+      if (cellsCount > 1) {
+        this.addPoints(5 * cellsCount);
+        this.pixi.linkedGrid.countCellsByField(
+          this.moveableGridCell.column, this.moveableGridCell.row, true
+        );
       }
+    } else {
+      if (this.addRandomBlock() === false)
+        console.log("game over");
     }
-  } 
-  // check for movement field in grid
-  if (enableMovement == false || this.grid.hasMovementField() === false) {
-    if (this.addRandomBlock() === false)
-      console.log("game over");
   }
   var scope = this;
-  setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);*/
+  setTimeout(function() { scope.moveBlocks(true); }, scope.updateTime);
 };
 
 Metrix.Board.prototype.setControl = function() {
