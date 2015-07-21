@@ -77,6 +77,8 @@ LinkedGrid.prototype.setSize = function(columns, rows, maxWidth, maxHeight) {
     this.cellMarginLeft = (this.maxWidth - this.cellWidth * this.columns) / 2;
     this.cellMarginTop = (this.maxHeight - this.cellHeight * this.rows) / 2;
   }
+  this.width = this.cellWidth * this.columns;
+  this.height = this.cellHeight * this.rows;
   
   if (this.debug == true)
     console.log("changed grid size with cell size", this.cellWidth, this.cellHeight);
