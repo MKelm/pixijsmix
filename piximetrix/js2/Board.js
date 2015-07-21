@@ -22,13 +22,19 @@ Metrix.Board = function(pixi) {
   // add default text elements
   this.points = 0;
   this.pointsPrefixText = "Points: ";
-  this.pointsText = new Metrix.Text(this, this.pointsPrefixText + this.points, 1, 12, "left");
-  this.creditsText = new Metrix.Text(this, "idx.codelab", 9, 12, "right");
+  
+  this.pointsText = new ScaledGridText(this.pixi.stage, this.pixi.linkedGrid, false);
+  this.pointsText.setText(this.pointsPrefixText + this.points);
+  this.pointsText.setPosition("bottom", "left", 10, 10);
+  
+  this.creditsText = new ScaledGridText(this.pixi.stage, this.pixi.linkedGrid, false);
+  this.creditsText.setText("idx.codelab");
+  this.creditsText.setPosition("bottom", "right", 10, 10);
   
   var scope = this;
   window.addEventListener('resize', function(event) {
-    scope.pointsText.setTextPosition();
-    scope.creditsText.setTextPosition();
+    scope.pointsText.resize(scope.pixi.linkedGrid);
+    scope.creditsText.resize(scope.pixi.linkedGrid);
   });
   
 };
